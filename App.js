@@ -6,19 +6,28 @@
  * @flow strict-local
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Text,
   View,
   NativeModules,
   TouchableOpacity,
-  Platform
+  Platform,
+  Dimensions,
+  StyleSheet
 } from 'react-native';
 
+import AnimationHook from './components/AnimationHook';
 const App = () => {
+  const [sum, setSum] = useState(0)
 
+  const getSum = (num1,num2) => {
+    NativeModules.NativeToastModule.sum(num1,num2,(sum) => setSum(sum))
+  }
+
+  getSum(100,200)
   return (
-      <View style={{flex:1, alignItems: "center", justifyContent:'center'}}>
+      <View style={styles.container}>
         <TouchableOpacity onPress={()=>{
           if(Platform.OS == "android"){
             NativeModules.NativeToastModule.showMessage("My first bridge code ", 10000);
@@ -26,8 +35,15 @@ const App = () => {
         }}>
           <Text>Click Me!</Text>
         </TouchableOpacity>
+        <Text>{`Sum from native method: ${sum}`}</Text>
+        <AnimationHook/>
       </View>
   );
 };
-
+const styles = StyleSheet.create({
+  container: {
+    flex:1, 
+    marginTop: Dimensions.get("screen").height * 0.15
+  }
+})
 export default App;
